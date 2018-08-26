@@ -1,27 +1,68 @@
 import { Application, Container, interaction } from "pixi.js";
 import { autotileRoads } from "./autotile-roads";
-import { buildUI } from "./build-ui";
-import { findBuilding } from "./buildings";
-import { globals, maxUnits, numCols, numRows, startMoney } from "./constants";
+import { globals, maxUnits, stepDuration, maxOutput } from "./constants";
 import { drawRoads } from "./draw-roads";
 import { drawUI } from "./draw-ui";
 import { loadAllImgs } from "./imgs";
-import { makeState } from "./make-state";
-import { Cell, IJ, State } from "./types";
-import {
-  eachMapIndex,
-  formatPrice,
-  ijToIndex,
-  initBuilding,
-  xyToIj
-} from "./utils";
 import { start } from "./start";
+import { State } from "./types";
+import { formatPrice, xyToIj, eachMapIndex, ijToIndex, hasDirs } from "./utils";
+import * as TWEEN from "@tweenjs/tween.js";
+import { Graph } from "./graph";
 
 let state: State;
 let mousePos = { x: 0, y: 0 };
 
+function doStep() {
+  state.sim.step++;
+
+  // step buildings
+  eachMapIndex(ij => {
+    let idx = ijToIndex(ij);
+    const c = state.map.cells[idx];
+    if (!c) {
+      return;
+    }
+    const b = c.building;
+    if (!b) {
+      return;
+    }
+    if (!(b.inputs && b.output)) {
+      return;
+    }
+
+    let outname = b.output.name;
+    let maxRounds = 5;
+    for (let i = 0; i < maxRounds; i++) {
+      for (const input of b.inputs) {
+        if (c.bstate.materials[input.name] < input.amount) {
+          return;
+        }
+      }
+      let projectedOutput = c.bstate.materials[outname] + b.output.amount;
+      if (projectedOutput > maxOutput) {
+        return;
+      }
+
+      for (const input of b.inputs) {
+        c.bstate.materials[input.name] -= input.amount;
+      }
+      c.bstate.materials[outname] += b.output.amount;
+    }
+  });
+
+  // step vehicles
+  const graph = new Graph(state.map.cells);
+  console.log(`Currently have ${graph.networks.size} cell networks`);
+}
+
 function updateSim(dt: number) {
-  // TODO: port
+  TWEEN.update(dt);
+  state.sim.ticks += dt;
+  if (state.sim.ticks > stepDuration) {
+    state.sim.ticks -= stepDuration;
+    doStep();
+  }
 }
 
 function updateUI() {
@@ -81,7 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   app.ticker.add(dt => {
-    update(dt);
+    update(dt / 60.0);
 
     if (container) {
       app.stage.removeChild(container);

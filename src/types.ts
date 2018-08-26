@@ -88,6 +88,8 @@ export enum Dir {
   d = 4
 }
 
+export const allDirs = [Dir.l, Dir.r, Dir.u, Dir.d];
+
 export interface Dirs {
   [key: string]: boolean;
   [Dir.l]?: boolean;

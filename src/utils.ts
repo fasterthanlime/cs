@@ -77,7 +77,14 @@ export function ijToIndex(ij: IJ): number {
   return i + j * numCols;
 }
 
-export function objIjDiff(a: IJ, b: IJ): IJ {
+export function ijAdd(a: IJ, b: IJ): IJ {
+  return {
+    i: a.i + b.i,
+    j: a.j + b.j
+  };
+}
+
+export function ijDiff(a: IJ, b: IJ): IJ {
   return {
     i: b.i - a.i,
     j: b.j - a.j
@@ -134,7 +141,7 @@ export function isValidIJ(ij: IJ): boolean {
 // Dir stuff
 ////////////////////////////////////////
 
-export function dirToVec(d: Dir): IJ {
+export function dirToIj(d: Dir): IJ {
   switch (d) {
     case Dir.l:
       return { i: -1, j: 0 };

@@ -1,6 +1,6 @@
 import { State } from "./types";
 import {
-  objIjDiff,
+  ijDiff,
   ijToDir,
   ijToIndex,
   dirOpposite,
@@ -25,7 +25,7 @@ export function drawRoads(state: State): true | void {
     return;
   }
 
-  const diffIJ = objIjDiff(lastIJ, currIJ);
+  const diffIJ = ijDiff(lastIJ, currIJ);
   const d = ijToDir(diffIJ);
   if (!d) {
     return;
