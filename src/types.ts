@@ -1,4 +1,26 @@
-export interface UIObject {}
+export interface OnClickResult {
+  buildUI?: boolean;
+  restart?: boolean;
+}
+export type OnClick = (state: State) => OnClickResult | void;
+
+export interface UIObject extends IJ, XY {
+  loc: "toolbar" | "palette" | "map";
+  icon?: string;
+  roadIcon?: string;
+  building?: BuildingSpec;
+  protected?: boolean;
+  x?: number;
+  y?: number;
+  i?: number;
+  j?: number;
+  w?: number;
+  h?: number;
+  cost?: number;
+  meta?: boolean;
+  onclick?: OnClick;
+  hover?: boolean;
+}
 
 export interface ResourceSpec {
   name: string;
@@ -22,13 +44,13 @@ export interface BuildingState {
 }
 
 export interface IJ {
-  i: number;
-  j: number;
+  i?: number;
+  j?: number;
 }
 
 export interface XY {
-  x: number;
-  y: number;
+  x?: number;
+  y?: number;
 }
 
 export interface Cell extends IJ {
@@ -37,9 +59,17 @@ export interface Cell extends IJ {
   building?: BuildingSpec;
   bstate?: BuildingState;
   dirs?: Dirs;
+  road?: string;
+  protected?: boolean;
 }
 
 export interface Unit {
+  i: number;
+  j: number;
+  x?: number;
+  y?: number;
+  d: Dir;
+  angle: number;
   materials: Materials;
   unit: UnitSpec;
 }
@@ -97,6 +127,7 @@ export interface UIState {
   buildingTab: string;
   pressed: false;
   hovered: UIObject;
+  shiftDown: boolean;
 }
 
 export interface SimState {
@@ -107,6 +138,8 @@ export interface SimState {
 
 export interface ToolSpec {
   name: string;
+  unit?: UnitSpec;
+  building?: BuildingSpec;
 }
 
 export interface MaterialSpec {

@@ -21,7 +21,8 @@ export function makeState(): State {
 
       buildingTab: "infra",
       pressed: false,
-      hovered: null
+      hovered: null,
+      shiftDown: false
     },
     tool: {
       name: "road"
