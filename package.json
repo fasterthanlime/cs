@@ -25,6 +25,8 @@
   "dependencies": {
     "@tweenjs/tween.js": "^17.2.0",
     "lodash": "^4.17.10",
+    "ngraph.graph": "0.0.14",
+    "ngraph.path": "^1.0.2",
     "pixi.js": "^4.8.1"
   }
 }

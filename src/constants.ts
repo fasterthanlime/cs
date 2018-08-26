@@ -7,7 +7,7 @@ import { Application } from "pixi.js";
 export const globals: {
   app: Application;
 } = {
-  app: null
+  app: null,
 };
 
 export const screenW = 1280;
@@ -22,7 +22,7 @@ export const palette = (() => {
     itemSide: 40,
     itemSpacing: 25,
     itemSpacingY: 60,
-    totalWidth: 0
+    totalWidth: 0,
   };
   p.totalWidth = p.initialX + (p.itemSide + p.itemSpacing) * p.itemsPerRow + 30;
   return p;
@@ -32,7 +32,7 @@ export const map = {
   initialX: 30,
   initialY: 60,
   slotSide: 60,
-  unitSide: 30
+  unitSide: 30,
 };
 
 ////////////////////////////////////////

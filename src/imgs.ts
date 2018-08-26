@@ -58,7 +58,7 @@ let toLoad = <ImageSpec>[
 
   ["units", "jeep"],
   ["units", "van"],
-  ["units", "truck"]
+  ["units", "truck"],
 ];
 
 export function getImg(name: string): Texture {

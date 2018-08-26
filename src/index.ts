@@ -1,13 +1,13 @@
+import * as TWEEN from "@tweenjs/tween.js";
 import { Application, Container, interaction } from "pixi.js";
 import { autotileRoads } from "./autotile-roads";
-import { globals, maxUnits, stepDuration, maxOutput } from "./constants";
+import { globals, maxOutput, maxUnits, stepDuration } from "./constants";
 import { drawRoads } from "./draw-roads";
 import { drawUI } from "./draw-ui";
 import { loadAllImgs } from "./imgs";
 import { start } from "./start";
 import { State } from "./types";
-import { formatPrice, xyToIj, eachMapIndex, ijToIndex, hasDirs } from "./utils";
-import * as TWEEN from "@tweenjs/tween.js";
+import { eachMapIndex, formatPrice, ijToIndex, xyToIj } from "./utils";
 import { Graph } from "./graph";
 
 let state: State;
@@ -52,8 +52,6 @@ function doStep() {
   });
 
   // step vehicles
-  const graph = new Graph(state.map.cells);
-  console.log(`Currently have ${graph.networks.size} cell networks`);
 }
 
 function updateSim(dt: number) {
@@ -70,6 +68,7 @@ function updateUI() {
   state.ui.currIJ = xyToIj(mousePos);
   if (drawRoads(state)) {
     autotileRoads(state);
+    state.map.graph = new Graph(state.map.cells);
   }
 
   state.ui.pausedText = "running";

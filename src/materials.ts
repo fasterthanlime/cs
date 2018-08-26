@@ -9,5 +9,5 @@ export const materials = <{ [key: string]: MaterialSpec }>{
   plastic: { price: 5 },
   jewelry: { price: 20 },
   toys: { price: 3 },
-  microchips: { price: 20 }
+  microchips: { price: 20 },
 };

@@ -8,7 +8,7 @@ import {
   hasDir,
   spend,
   addDir,
-  ijEqual
+  ijEqual,
 } from "./utils";
 import { roadCost } from "./constants";
 

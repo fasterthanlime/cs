@@ -7,7 +7,7 @@ import {
   maxUnits,
   screenW,
   palette,
-  map
+  map,
 } from "./constants";
 import { spend, ijToIndex, initBuilding, ijToXy } from "./utils";
 import { buildings } from "./buildings";
@@ -20,7 +20,7 @@ const standardButtons = <{ [key: string]: UIObject }>{
       console.log("pausing");
       state.sim.paused = true;
       return { buildUI: true };
-    }
+    },
   },
   play: {
     loc: "toolbar",
@@ -29,7 +29,7 @@ const standardButtons = <{ [key: string]: UIObject }>{
       console.log("resuming");
       state.sim.paused = false;
       return { buildUI: true };
-    }
+    },
   },
   restart: {
     loc: "toolbar",
@@ -37,7 +37,7 @@ const standardButtons = <{ [key: string]: UIObject }>{
     onclick: state => {
       console.log("restarting");
       return { restart: true };
-    }
+    },
   },
   clearUnits: {
     loc: "toolbar",
@@ -46,8 +46,8 @@ const standardButtons = <{ [key: string]: UIObject }>{
       state.map.units = [];
       console.log("clearing all units");
       return {};
-    }
-  }
+    },
+  },
 };
 
 export function buildUI(state: State) {
@@ -77,7 +77,7 @@ export function buildUI(state: State) {
       onclick: state => {
         state.tool = { name: "unit", unit: u };
         return { buildUI: true };
-      }
+      },
     };
     objects.push(obj);
   }
@@ -90,7 +90,7 @@ export function buildUI(state: State) {
       onclick: state => {
         state.tool = { name: "road" };
         return { buildUI: true };
-      }
+      },
     };
     objects.push(obj);
   }
@@ -103,7 +103,7 @@ export function buildUI(state: State) {
       onclick: state => {
         state.tool = { name: "building", building: b };
         return { buildUI: true };
-      }
+      },
     };
     objects.push(obj);
   }
@@ -138,7 +138,7 @@ export function buildUI(state: State) {
                     d: Dir.u,
                     angle: 0,
                     unit,
-                    materials: {}
+                    materials: {},
                   });
                 }
               }
@@ -162,7 +162,7 @@ export function buildUI(state: State) {
               }
               break;
           }
-        }
+        },
       });
     }
   }
@@ -177,7 +177,7 @@ export function buildUI(state: State) {
           j,
           loc: "map",
           building: c.building,
-          protected: c.protected
+          protected: c.protected,
         };
         if (c.road) {
           obj.roadIcon = c.road;

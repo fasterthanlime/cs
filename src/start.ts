@@ -4,6 +4,8 @@ import { numCols, numRows } from "./constants";
 import { makeState } from "./make-state";
 import { Cell, IJ, State } from "./types";
 import { eachMapIndex, ijToIndex, initBuilding } from "./utils";
+import { autotileRoads } from "./autotile-roads";
+import { Graph } from "./graph";
 
 export function start(): State {
   let state = makeState();
@@ -21,7 +23,7 @@ export function start(): State {
         i,
         j,
         building: findBuilding("mountains"),
-        protected: true
+        protected: true,
       };
       initBuilding(c);
       state.map.cells[idx] = c;
@@ -31,13 +33,13 @@ export function start(): State {
   {
     let cityIJ: IJ = {
       i: Math.round(3 + Math.random() * (numCols - 6)),
-      j: Math.round(3 + Math.random() * (numRows - 6))
+      j: Math.round(3 + Math.random() * (numRows - 6)),
     };
     for (let id = -2; id <= 2; id++) {
       for (let jd = -2; jd <= 2; jd++) {
         let ij = {
           i: cityIJ.i + id,
-          j: cityIJ.j + jd
+          j: cityIJ.j + jd,
         };
         let idx = ijToIndex(ij);
         delete state.map.cells[idx].building;
@@ -53,7 +55,7 @@ export function start(): State {
         i,
         j,
         building: findBuilding(bname),
-        protected: true
+        protected: true,
       };
       initBuilding(c);
       let idx = ijToIndex({ i, j });
@@ -65,6 +67,8 @@ export function start(): State {
     addBuiltin(-1, 2, "copper");
   }
   buildUI(state);
+  autotileRoads(state);
+  state.map.graph = new Graph(state.map.cells);
   (window as any).GameState = state;
   return state;
 }

@@ -8,7 +8,7 @@ export function makeState(): State {
     money: startMoney,
     map: {
       cells: [],
-      units: []
+      units: [],
     },
     ui: {
       objects: [],
@@ -25,16 +25,16 @@ export function makeState(): State {
       hovered: null,
       shiftDown: false,
       lastIJ: { i: 0, j: 0 },
-      currIJ: { i: 0, j: 0 }
+      currIJ: { i: 0, j: 0 },
     },
     tool: {
-      name: "road"
+      name: "road",
     },
     sim: {
       paused: false,
       ticks: 0,
-      step: 0
-    }
+      step: 0,
+    },
   };
   return state;
 }

@@ -1,3 +1,5 @@
+import { Graph } from "./graph";
+
 export interface OnClickResult {
   buildUI?: boolean;
   restart?: boolean;
@@ -117,6 +119,7 @@ export interface State {
 export interface MapState {
   cells: Cell[];
   units: Unit[];
+  graph?: Graph;
 }
 
 export interface UIState {
