@@ -4,8 +4,19 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "webpack-serve"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@types/pixi.js": "^4.8.0",
+    "ts-loader": "^4.5.0",
+    "typescript": "^3.0.1",
+    "webpack": "^4.17.1",
+    "webpack-command": "^0.4.1",
+    "webpack-serve": "^2.0.2"
+  },
+  "dependencies": {
+    "pixi.js": "^4.8.1"
+  }
 }
