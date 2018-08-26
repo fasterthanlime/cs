@@ -1,7 +1,9 @@
 import { Application, Text } from "pixi.js";
+import { globals } from "./constants";
 
 document.addEventListener("DOMContentLoaded", () => {
   var app = new Application(1280, 720);
+  globals.app = app;
   document.body.appendChild(app.view);
 
   var text = new Text("Hellooo.", {
