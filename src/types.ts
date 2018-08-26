@@ -1,6 +1,7 @@
 export interface OnClickResult {
   buildUI?: boolean;
   restart?: boolean;
+  autotileRoads?: boolean;
 }
 export type OnClick = (state: State) => OnClickResult | void;
 
@@ -125,9 +126,12 @@ export interface UIState {
   statusText: string;
 
   buildingTab: string;
-  pressed: false;
+  dragging: boolean;
   hovered: UIObject;
   shiftDown: boolean;
+
+  lastIJ?: IJ;
+  currIJ?: IJ;
 }
 
 export interface SimState {

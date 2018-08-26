@@ -9,7 +9,7 @@ import {
   palette,
   map
 } from "./constants";
-import { spend, ijToIndex, initBuilding, objectWorldPos } from "./utils";
+import { spend, ijToIndex, initBuilding, ijToXy } from "./utils";
 
 const standardButtons = <{ [key: string]: UIObject }>{
   pause: {
@@ -109,7 +109,8 @@ export function buildUI(state: State) {
           console.log("slot clicked! tool = ", state.tool);
           switch (state.tool.name) {
             case "road":
-              // muffin
+              console.log(`Starting dragging!`);
+              state.ui.dragging = true;
               break;
             case "unit":
               if (state.map.units.length >= maxUnits) {
@@ -131,7 +132,7 @@ export function buildUI(state: State) {
               }
               break;
             case "building":
-              const idx = ijToIndex(i, j);
+              const idx = ijToIndex({ i, j });
               const c = state.map.cells[idx];
               if (c.protected) {
                 return;
@@ -156,7 +157,7 @@ export function buildUI(state: State) {
 
   for (let i = 0; i < numCols; i++) {
     for (let j = 0; j < numRows; j++) {
-      let idx = ijToIndex(i, j);
+      let idx = ijToIndex({ i, j });
       const c = state.map.cells[idx];
       if (c) {
         const obj: UIObject = {
@@ -217,7 +218,7 @@ export function buildUI(state: State) {
           }
           break;
         case "map":
-          const { x, y } = objectWorldPos(obj);
+          const { x, y } = ijToXy(obj);
           obj.x = x;
           obj.y = y;
           obj.w = map.slotSide;

@@ -20,9 +20,11 @@ export function makeState(): State {
       statusText: "",
 
       buildingTab: "infra",
-      pressed: false,
+      dragging: false,
       hovered: null,
-      shiftDown: false
+      shiftDown: false,
+      lastIJ: { i: 0, j: 0 },
+      currIJ: { i: 0, j: 0 }
     },
     tool: {
       name: "road"

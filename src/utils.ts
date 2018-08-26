@@ -72,7 +72,8 @@ export function initBuilding(c: Cell) {
   }
 }
 
-export function ijToIndex(i: number, j: number): number {
+export function ijToIndex(ij: IJ): number {
+  const { i, j } = ij;
   return i + j * numCols;
 }
 
@@ -106,11 +107,22 @@ export function eachMapIndex(f: (ij: IJ) => any) {
   }
 }
 
-export function objectWorldPos(ij: IJ): XY {
+export function ijToXy(ij: IJ): XY {
   const { i, j } = ij;
   const x = map.initialX + i * map.slotSide;
   const y = map.initialY + j * map.slotSide;
   return { x, y };
+}
+
+export function xyToIj(xy: XY): IJ | null {
+  const { x, y } = xy;
+  let i = Math.floor((x - map.initialX) / map.slotSide);
+  let j = Math.floor((y - map.initialY) / map.slotSide);
+  const ij = { i, j };
+  if (isValidIJ(ij)) {
+    return ij;
+  }
+  return null;
 }
 
 export function isValidIJ(ij: IJ): boolean {
@@ -148,7 +160,7 @@ export function dirToAngle(d: Dir): Angle {
   }
 }
 
-export function vecToDir(ij: IJ): Dir {
+export function ijToDir(ij: IJ): Dir {
   const { i, j } = ij;
   switch (true) {
     case feq(i, -1) && feq(j, 0):
@@ -161,6 +173,10 @@ export function vecToDir(ij: IJ): Dir {
       return Dir.d;
   }
   return undefined;
+}
+
+export function ijEqual(a: IJ, b: IJ): boolean {
+  return feq(a.i, b.i) && feq(a.j, b.j);
 }
 
 export function dirOpposite(d: Dir) {
