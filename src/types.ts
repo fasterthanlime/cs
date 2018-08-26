@@ -103,6 +103,7 @@ export type Angle = number;
 
 export interface State {
   startedAt: number;
+  shouldRestart: boolean;
   money: number;
   map: MapState;
   ui: UIState;

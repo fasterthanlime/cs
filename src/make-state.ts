@@ -4,6 +4,7 @@ import { State } from "./types";
 export function makeState(): State {
   const state: State = {
     startedAt: Date.now(),
+    shouldRestart: false,
     money: startMoney,
     map: {
       cells: [],

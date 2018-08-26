@@ -57,6 +57,9 @@ export function drawUI(state: State): Container {
             if (res.autotileRoads) {
               autotileRoads(state);
             }
+            if (res.restart) {
+              state.shouldRestart = true;
+            }
           }
         });
       }
@@ -64,6 +67,11 @@ export function drawUI(state: State): Container {
       if (obj.loc === "map") {
         buildingLayer.addChild(sprite);
       } else {
+        if (obj.loc === "toolbar") {
+          let bgSprite = new Sprite(getImg("button-bg"));
+          bgSprite.position.set(x, y);
+          uiLayer.addChild(bgSprite);
+        }
         uiLayer.addChild(sprite);
       }
     }
