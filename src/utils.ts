@@ -73,21 +73,23 @@ export function initBuilding(c: Cell) {
 }
 
 export function ijToIndex(ij: IJ): number {
-  const { i, j } = ij;
+  let { i, j } = ij;
+  i = Math.round(i);
+  j = Math.round(j);
   return i + j * numCols;
 }
 
 export function ijAdd(a: IJ, b: IJ): IJ {
   return {
     i: a.i + b.i,
-    j: a.j + b.j
+    j: a.j + b.j,
   };
 }
 
 export function ijDiff(a: IJ, b: IJ): IJ {
   return {
     i: b.i - a.i,
-    j: b.j - a.j
+    j: b.j - a.j,
   };
 }
 
@@ -161,9 +163,9 @@ export function dirToAngle(d: Dir): Angle {
     case Dir.r:
       return (PI / 2) as Angle;
     case Dir.u:
-      return PI as Angle;
-    case Dir.d:
       return 0 as Angle;
+    case Dir.d:
+      return PI as Angle;
   }
 }
 
@@ -249,7 +251,7 @@ export function spend(state: State, amount: number, action: string): boolean {
   }
 
   state.ui.statusText = `can't afford to spend ${formatPrice(
-    amount
+    amount,
   )} to ${action}`;
   return false;
 }

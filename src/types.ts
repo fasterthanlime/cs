@@ -1,4 +1,6 @@
 import { Graph } from "./graph";
+import { Node } from "ngraph.graph";
+import { Tween } from "@tweenjs/tween.js";
 
 export interface OnClickResult {
   buildUI?: boolean;
@@ -75,6 +77,14 @@ export interface Unit {
   angle: number;
   materials: Materials;
   unit: UnitSpec;
+  path?: UnitPath;
+  tween?: Tween;
+  lastOccupancy?: number;
+}
+
+export interface UnitPath {
+  index: number;
+  nodes: Node<any>[];
 }
 
 export interface UnitSpec {
@@ -87,7 +97,7 @@ export enum Dir {
   l = 1,
   r = 2,
   u = 3,
-  d = 4
+  d = 4,
 }
 
 export const allDirs = [Dir.l, Dir.r, Dir.u, Dir.d];
@@ -142,6 +152,7 @@ export interface UIState {
 
 export interface SimState {
   paused: boolean;
+  ticksSinceStart: number;
   ticks: number;
   step: number;
 }

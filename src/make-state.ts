@@ -33,6 +33,7 @@ export function makeState(): State {
     sim: {
       paused: false,
       ticks: 0,
+      ticksSinceStart: 0,
       step: 0,
     },
   };

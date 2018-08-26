@@ -4,10 +4,11 @@ import { screenH, map } from "./constants";
 import { getImg } from "./imgs";
 import { buildUI } from "./build-ui";
 import { autotileRoads } from "./autotile-roads";
-import { ijToXy, unitOccupancy } from "./utils";
+import { ijToXy, unitOccupancy, cellOccupancy, ijToIndex } from "./utils";
 
 export function drawUI(state: State): Container {
   const container = new Container();
+  const halfSide = map.slotSide * 0.5;
 
   const roadLayer = new Container();
   const unitLayer = new Container();
@@ -74,6 +75,30 @@ export function drawUI(state: State): Container {
         }
         uiLayer.addChild(sprite);
       }
+
+      if (obj.building) {
+        const b = obj.building;
+        if (b.inputs && b.output) {
+          let idx = ijToIndex(obj);
+          const c = state.map.cells[idx];
+          const occupancy = cellOccupancy(c);
+          const gfx = new Graphics();
+          gfx.beginFill(0x777777, 1);
+          gfx.drawRect(-1, -1, 40, 4);
+          gfx.endFill();
+
+          gfx.beginFill(0x333333, 1);
+          gfx.drawRect(0, 0, 40, 2);
+          gfx.endFill();
+
+          gfx.beginFill(0xff9999, 1);
+          gfx.drawRect(0, 0, occupancy * 40, 2);
+          gfx.endFill();
+
+          gfx.position.set(x + halfSide - 20, y + halfSide + halfSide * 0.7);
+          buildingLayer.addChild(gfx);
+        }
+      }
     }
     if (roadIcon) {
       const sprite = new Sprite(getImg(roadIcon));
@@ -84,20 +109,38 @@ export function drawUI(state: State): Container {
 
   for (const u of state.map.units) {
     const { i, j, d, angle } = u;
-    const { x, y } = ijToXy(u);
+    let { x, y } = ijToXy(u);
+    x += halfSide;
+    y += halfSide;
 
     const sprite = new Sprite(getImg(u.unit.name));
     sprite.position.set(x, y);
+    sprite.anchor.set(0.5);
     sprite.rotation = angle;
     unitLayer.addChild(sprite);
 
-    const occupancy = unitOccupancy(u);
+    const currOccupancy = unitOccupancy(u);
+    let occupancy: number;
+    if (typeof u.lastOccupancy === "undefined") {
+      occupancy = currOccupancy;
+    } else {
+      let t = 0.1;
+      occupancy = (1 - t) * u.lastOccupancy + t * currOccupancy;
+    }
+    u.lastOccupancy = occupancy;
+    console.log(`showing occupancy ${occupancy}`);
     const gfx = new Graphics();
-    gfx.beginFill(0xffffff, 1);
-    gfx.drawRect(0, 0, occupancy / 40, 2);
+
+    gfx.beginFill(0xffffff, 0.5);
+    gfx.arc(0, 0, 4, 0, 2 * Math.PI);
     gfx.endFill();
-    gfx.position.set(x, y);
-    unitLayer.addChild(gfx);
+
+    gfx.beginFill(0xffffff, 0.5);
+    gfx.arc(0, 0, 7, 0, occupancy * 2 * Math.PI);
+    gfx.endFill();
+
+    gfx.position.set(x, y - halfSide * 0.7);
+    uiLayer.addChild(gfx);
   }
 
   return container;

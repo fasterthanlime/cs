@@ -13,7 +13,7 @@ import { PathFinder, aStar } from "ngraph.path";
 
 interface Network {
   cells: Cell[];
-  buildingCells: Cell[];
+  buildings: number[];
 }
 
 export class Graph {
@@ -30,7 +30,7 @@ export class Graph {
       if (c && hasDirs(c)) {
         let net: Network = {
           cells: [c],
-          buildingCells: [],
+          buildings: [],
         };
         this.networksByCell[idx] = net;
         for (const dir of allDirs) {
@@ -62,7 +62,8 @@ export class Graph {
     for (const n of this.networks) {
       for (const c of n.cells) {
         if (c.building) {
-          n.buildingCells.push();
+          let idx = ijToIndex(c);
+          n.buildings.push(idx);
         }
       }
     }
@@ -78,13 +79,10 @@ export class Graph {
             return;
           }
           let nIdx = ijToIndex(nIJ);
-          console.log(`Adding link ${idx} => ${nIdx}`);
           g.addLink(idx, nIdx);
         }
       }
     });
-    const finder = aStar(g, { oriented: true });
-    (window as any).finder = finder;
-    console.log(`Path finder is available as window.finder`);
+    this.finder = aStar(g, { oriented: true });
   }
 }
