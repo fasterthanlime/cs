@@ -29,7 +29,7 @@ export const palette = (() => {
 })();
 
 export const map = {
-  initialX: 0,
+  initialX: 30,
   initialY: 60,
   slotSide: 60,
   unitSide: 30
