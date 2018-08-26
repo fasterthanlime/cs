@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   for (let i = 0; i < numCols; i++) {
     for (let j = 0; j < numRows; j++) {
-      if (Math.random() <= 1 / 3) {
+      if (Math.random() <= 1 / 5) {
         let idx = ijToIndex({ i, j });
         let c: Cell = {
           i,

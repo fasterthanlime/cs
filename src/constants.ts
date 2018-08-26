@@ -46,7 +46,8 @@ export const maxUnits = 100;
 // Costs
 ////////////////////////////////////////
 
-export const startMoney = 30000;
+// export const startMoney = 30000;
+export const startMoney = 30000 * 100;
 export const roadCost = 5000;
 export const maxOutput = 10000;
 export const maxInput = 10000;

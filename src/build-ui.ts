@@ -10,6 +10,7 @@ import {
   map
 } from "./constants";
 import { spend, ijToIndex, initBuilding, ijToXy } from "./utils";
+import { buildings } from "./buildings";
 
 const standardButtons = <{ [key: string]: UIObject }>{
   pause: {
@@ -94,6 +95,19 @@ export function buildUI(state: State) {
     objects.push(obj);
   }
 
+  for (const b of buildings.infra) {
+    const obj: UIObject = {
+      loc: "palette",
+      icon: b.name,
+      cost: b.cost,
+      onclick: state => {
+        state.tool = { name: "building", building: b };
+        return { buildUI: true };
+      }
+    };
+    objects.push(obj);
+  }
+
   ////////////////////////////////////////
   // map
   ////////////////////////////////////////
@@ -106,10 +120,8 @@ export function buildUI(state: State) {
         meta: true,
         icon: "slot",
         onclick: state => {
-          console.log("slot clicked! tool = ", state.tool);
           switch (state.tool.name) {
             case "road":
-              console.log(`Starting dragging!`);
               state.ui.dragging = true;
               break;
             case "unit":

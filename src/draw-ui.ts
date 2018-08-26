@@ -1,31 +1,42 @@
 import { State } from "./types";
-import { Container, Text, Sprite } from "pixi.js";
-import { screenH } from "./constants";
+import { Container, Text, Sprite, Rectangle, Graphics } from "pixi.js";
+import { screenH, map } from "./constants";
 import { getImg } from "./imgs";
 import { buildUI } from "./build-ui";
 import { autotileRoads } from "./autotile-roads";
+import { ijToXy, unitOccupancy } from "./utils";
 
 export function drawUI(state: State): Container {
   const container = new Container();
+
+  const roadLayer = new Container();
+  const unitLayer = new Container();
+  const buildingLayer = new Container();
+  const uiLayer = new Container();
+  container.addChild(roadLayer);
+  container.addChild(unitLayer);
+  container.addChild(buildingLayer);
+  container.addChild(uiLayer);
+
   {
     let t = new Text(state.ui.pausedText, { fill: 0xffffff });
     t.position.set(20, screenH - 70);
-    container.addChild(t);
+    uiLayer.addChild(t);
   }
   {
     let t = new Text(state.ui.moneyText, { fill: 0x44ff44 });
     t.position.set(300, screenH - 70);
-    container.addChild(t);
+    uiLayer.addChild(t);
   }
   {
     let t = new Text(state.ui.unitsText, { fill: 0x4444ff });
     t.position.set(600, screenH - 70);
-    container.addChild(t);
+    uiLayer.addChild(t);
   }
   {
     let t = new Text(state.ui.statusText, { fill: 0xffffff, fontSize: 14 });
     t.position.set(20, screenH - 25);
-    container.addChild(t);
+    uiLayer.addChild(t);
   }
 
   for (const obj of state.ui.objects) {
@@ -49,13 +60,36 @@ export function drawUI(state: State): Container {
           }
         });
       }
-      container.addChild(sprite);
+
+      if (obj.loc === "map") {
+        buildingLayer.addChild(sprite);
+      } else {
+        uiLayer.addChild(sprite);
+      }
     }
     if (roadIcon) {
       const sprite = new Sprite(getImg(roadIcon));
       sprite.position.set(x, y);
-      container.addChild(sprite);
+      roadLayer.addChild(sprite);
     }
+  }
+
+  for (const u of state.map.units) {
+    const { i, j, d, angle } = u;
+    const { x, y } = ijToXy(u);
+
+    const sprite = new Sprite(getImg(u.unit.name));
+    sprite.position.set(x, y);
+    sprite.rotation = angle;
+    unitLayer.addChild(sprite);
+
+    const occupancy = unitOccupancy(u);
+    const gfx = new Graphics();
+    gfx.beginFill(0xffffff, 1);
+    gfx.drawRect(0, 0, occupancy / 40, 2);
+    gfx.endFill();
+    gfx.position.set(x, y);
+    unitLayer.addChild(gfx);
   }
 
   return container;
