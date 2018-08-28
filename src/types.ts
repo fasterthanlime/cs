@@ -1,6 +1,7 @@
 import { Graph } from "./graph";
 import { Node } from "ngraph.graph";
 import { Tween } from "@tweenjs/tween.js";
+import { Container, Text } from "pixi.js";
 
 export interface OnClickResult {
   buildUI?: boolean;
@@ -124,6 +125,8 @@ export interface State {
 
   tool: ToolSpec;
   sim: SimState;
+  draw?: DrawState;
+  events?: EventKind[];
 }
 
 export interface MapState {
@@ -133,6 +136,8 @@ export interface MapState {
 }
 
 export interface UIState {
+  toolbar: ToolbarState;
+
   objects: UIObject[];
   cursor: string;
   mainText: string;
@@ -165,4 +170,37 @@ export interface ToolSpec {
 
 export interface MaterialSpec {
   price: number;
+}
+
+enum EventKind {
+  pause = "pause",
+  resume = "resume",
+  restart = "restart",
+  clearUnits = "clear-units",
+}
+
+export interface ToolbarObject {
+  container?: Container;
+  event: EventKind;
+  icon: string;
+}
+
+export interface ToolbarState {
+  container?: Container;
+  objects: ToolbarObject[];
+  dirty: boolean;
+}
+
+export interface DrawState {
+  container?: Container;
+  layers?: {
+    road?: Container;
+    unit?: Container;
+    building?: Container;
+    ui?: Container;
+  };
+  pausedText?: Text;
+  moneyText?: Text;
+  unitsText?: Text;
+  statusText?: Text;
 }

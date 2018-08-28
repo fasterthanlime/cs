@@ -6,40 +6,93 @@ import { buildUI } from "./build-ui";
 import { autotileRoads } from "./autotile-roads";
 import { ijToXy, unitOccupancy, cellOccupancy, ijToIndex } from "./utils";
 
+function createInitialDraw(state: State) {
+  state.draw = {};
+  let container = new Container();
+  Object.assign(state.draw, { container });
+  {
+    state.draw.layers = {};
+    let road = new Container();
+    container.addChild(road);
+    let unit = new Container();
+    container.addChild(unit);
+    let building = new Container();
+    container.addChild(building);
+    let ui = new Container();
+    container.addChild(ui);
+    Object.assign(state.draw.layers, { road, unit, building, ui });
+  }
+
+  let pausedText = new Text("", { fill: 0xffffff });
+  pausedText.position.set(20, screenH - 70);
+  let moneyText = new Text("", { fill: 0x44ff44 });
+  moneyText.position.set(300, screenH - 70);
+  let unitsText = new Text("", { fill: 0x4444ff });
+  unitsText.position.set(600, screenH - 70);
+  let statusText = new Text("", { fill: 0xffffff, fontSize: 14 });
+  statusText.position.set(20, screenH - 25);
+
+  Object.assign(state.draw, { pausedText, moneyText, unitsText, statusText });
+}
+
 export function drawUI(state: State): Container {
-  const container = new Container();
+  if (!state.draw) {
+    createInitialDraw(state);
+  }
+
+  let { layers } = state.draw;
   const halfSide = map.slotSide * 0.5;
 
-  const roadLayer = new Container();
-  const unitLayer = new Container();
-  const buildingLayer = new Container();
-  const uiLayer = new Container();
-  container.addChild(roadLayer);
-  container.addChild(unitLayer);
-  container.addChild(buildingLayer);
-  container.addChild(uiLayer);
+  layers.road.removeChildren();
+  layers.unit.removeChildren();
+  layers.building.removeChildren();
+  layers.ui.removeChildren();
 
+  // update texts
+  state.draw.pausedText.text = state.ui.pausedText;
+  layers.ui.addChild(state.draw.pausedText);
+
+  state.draw.moneyText.text = state.ui.moneyText;
+  layers.ui.addChild(state.draw.moneyText);
+
+  state.draw.unitsText.text = state.ui.unitsText;
+  layers.ui.addChild(state.draw.unitsText);
+
+  state.draw.statusText.text = state.ui.statusText;
+  layers.ui.addChild(state.draw.statusText);
+
+  // update toolbar
   {
-    let t = new Text(state.ui.pausedText, { fill: 0xffffff });
-    t.position.set(20, screenH - 70);
-    uiLayer.addChild(t);
-  }
-  {
-    let t = new Text(state.ui.moneyText, { fill: 0x44ff44 });
-    t.position.set(300, screenH - 70);
-    uiLayer.addChild(t);
-  }
-  {
-    let t = new Text(state.ui.unitsText, { fill: 0x4444ff });
-    t.position.set(600, screenH - 70);
-    uiLayer.addChild(t);
-  }
-  {
-    let t = new Text(state.ui.statusText, { fill: 0xffffff, fontSize: 14 });
-    t.position.set(20, screenH - 25);
-    uiLayer.addChild(t);
+    let { toolbar } = state.ui;
+    if (!toolbar.container || toolbar.dirty) {
+      console.log(`Rebuilding toolbar container`);
+      toolbar.dirty = false;
+      toolbar.container = new Container();
+      let x = 10;
+      let y = 10;
+      for (const obj of toolbar.objects) {
+        console.log(`button ${obj.icon}`);
+        if (!obj.container) {
+          obj.container = new Container();
+        }
+
+        obj.container.removeChildren();
+        obj.container.addChild(new Sprite(getImg("button-bg")));
+        let sprite = new Sprite(getImg(obj.icon));
+        sprite.interactive = true;
+        sprite.on("click", () => {
+          state.events.push(obj.event);
+        });
+        obj.container.addChild(sprite);
+        obj.container.position.set(x, y);
+        x += 50;
+        toolbar.container.addChild(obj.container);
+      }
+    }
+    layers.ui.addChild(toolbar.container);
   }
 
+  // update rest of UI
   for (const obj of state.ui.objects) {
     const { x, y } = obj;
     const { icon, roadIcon } = obj;
@@ -66,14 +119,9 @@ export function drawUI(state: State): Container {
       }
 
       if (obj.loc === "map") {
-        buildingLayer.addChild(sprite);
+        layers.building.addChild(sprite);
       } else {
-        if (obj.loc === "toolbar") {
-          let bgSprite = new Sprite(getImg("button-bg"));
-          bgSprite.position.set(x, y);
-          uiLayer.addChild(bgSprite);
-        }
-        uiLayer.addChild(sprite);
+        layers.ui.addChild(sprite);
       }
 
       if (obj.building) {
@@ -96,14 +144,14 @@ export function drawUI(state: State): Container {
           gfx.endFill();
 
           gfx.position.set(x + halfSide - 20, y + halfSide + halfSide * 0.7);
-          buildingLayer.addChild(gfx);
+          layers.building.addChild(gfx);
         }
       }
     }
     if (roadIcon) {
       const sprite = new Sprite(getImg(roadIcon));
       sprite.position.set(x, y);
-      roadLayer.addChild(sprite);
+      layers.road.addChild(sprite);
     }
   }
 
@@ -117,7 +165,7 @@ export function drawUI(state: State): Container {
     sprite.position.set(x, y);
     sprite.anchor.set(0.5);
     sprite.rotation = angle;
-    unitLayer.addChild(sprite);
+    layers.unit.addChild(sprite);
 
     const currOccupancy = unitOccupancy(u);
     let occupancy: number;
@@ -140,8 +188,8 @@ export function drawUI(state: State): Container {
     gfx.endFill();
 
     gfx.position.set(x, y - halfSide * 0.7);
-    uiLayer.addChild(gfx);
+    layers.ui.addChild(gfx);
   }
 
-  return container;
+  return state.draw.container;
 }

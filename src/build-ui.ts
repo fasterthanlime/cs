@@ -12,58 +12,8 @@ import {
 import { spend, ijToIndex, initBuilding, ijToXy } from "./utils";
 import { buildings } from "./buildings";
 
-const standardButtons = <{ [key: string]: UIObject }>{
-  pause: {
-    loc: "toolbar",
-    icon: "pause",
-    onclick: state => {
-      console.log("pausing");
-      state.sim.paused = true;
-      return { buildUI: true };
-    },
-  },
-  play: {
-    loc: "toolbar",
-    icon: "play",
-    onclick: state => {
-      console.log("resuming");
-      state.sim.paused = false;
-      return { buildUI: true };
-    },
-  },
-  restart: {
-    loc: "toolbar",
-    icon: "restart",
-    onclick: state => {
-      console.log("restarting");
-      return { restart: true };
-    },
-  },
-  clearUnits: {
-    loc: "toolbar",
-    icon: "clear-units",
-    onclick: state => {
-      state.map.units = [];
-      console.log("clearing all units");
-      return {};
-    },
-  },
-};
-
 export function buildUI(state: State) {
   let objects: UIObject[] = [];
-
-  ////////////////////////////////////////
-  // toolbar
-  ////////////////////////////////////////
-
-  if (state.sim.paused) {
-    objects.push(standardButtons.play);
-  } else {
-    objects.push(standardButtons.pause);
-  }
-  objects.push(standardButtons.clearUnits);
-  objects.push(standardButtons.restart);
 
   ////////////////////////////////////////
   // palette

@@ -6,6 +6,7 @@ import { Cell, IJ, State } from "./types";
 import { eachMapIndex, ijToIndex, initBuilding } from "./utils";
 import { autotileRoads } from "./autotile-roads";
 import { Graph } from "./graph";
+import { buildToolbar } from "./build-toolbar";
 
 export function start(): State {
   let state = makeState();
@@ -66,6 +67,7 @@ export function start(): State {
     addBuiltin(-2, 1, "copper");
     addBuiltin(-1, 2, "copper");
   }
+  buildToolbar(state);
   buildUI(state);
   autotileRoads(state);
   state.map.graph = new Graph(state.map.cells);

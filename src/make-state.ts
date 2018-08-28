@@ -11,6 +11,10 @@ export function makeState(): State {
       units: [],
     },
     ui: {
+      toolbar: {
+        objects: [],
+        dirty: false,
+      },
       objects: [],
 
       cursor: "pointer",
@@ -36,6 +40,7 @@ export function makeState(): State {
       ticksSinceStart: 0,
       step: 0,
     },
+    events: [],
   };
   return state;
 }
